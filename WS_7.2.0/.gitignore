@@ -1,0 +1,7 @@
+/build
+/ext
+/packages
+bootstrap.*
+classic.json*
+modern.json*
+.sencha
