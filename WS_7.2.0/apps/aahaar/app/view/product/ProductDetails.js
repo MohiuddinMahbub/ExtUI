@@ -28,7 +28,7 @@ Ext.define('Admin.view.product.ProductDetails', {
 	scrollable: true,
 	
     width : 0.30 * screenWidthP,
-    height: 0.70 * screenHeightP,
+    height: 0.75 * screenHeightP,
     fullscreen: true,
     modal: true,
     centered: true,    
@@ -197,13 +197,19 @@ Ext.define('Admin.view.product.ProductDetails', {
 											}
 										},
 										{
-											xtype: 'textfield',
+											xtype: 'combobox',
 											labelWidth: 100,
-											fieldLabel: 'Number',
 											width : '100%',
-											reference: 'amount',
-											name: 'amount',
+											reference: 'isAvailable',
+											fieldLabel: 'Available',
+											displayField: 'isAvailable',
+											valueField: 'isAvailable',
+											editable: true,
+											name: 'isAvailable',
+											queryMode: 'local',
+											triggerAction: 'all',
 											allowBlank: false,
+											store: ["YES","NO"],
 											afterLabelTextTpl: [
 												'<span style="color:red;font-weight:bold" data-qtip="Required">*</span>'
 											],

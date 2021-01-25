@@ -36,6 +36,10 @@ Ext.define('Admin.model.Sales', {
 		},
 		{
 			type: 'string',
+			name: 'salesEntityIdentity'
+		},
+		{
+			type: 'string',
 			name: 'quantity'
 		},
 		{
@@ -43,8 +47,20 @@ Ext.define('Admin.model.Sales', {
 			name: 'stock'
 		},
 		{
+			type: 'string',
+			name: 'categoryName'
+		},
+		{
+			type: 'string',
+			name: 'itemReturned'
+		},
+		{
 			type: 'float',
 			name: 'unitPrice'
+		},
+		{
+			type: 'float',
+			name: 'totalAmount'
 		},
 		{
 			type: 'date',

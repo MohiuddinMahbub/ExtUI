@@ -28,7 +28,7 @@ Ext.define('Admin.model.Product', {
 		},
 		{
 			type: 'string',
-			name: 'amount'
+			name: 'isAvailable'
 		},
 		{
 			type: 'string',

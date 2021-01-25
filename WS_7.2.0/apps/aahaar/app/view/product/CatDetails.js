@@ -27,7 +27,7 @@ Ext.define('Admin.view.product.CatDetails', {
 	closable : false,
 	scrollable: true,
 	
-    width : 0.25*screenWidth,
+    width : 0.30*screenWidth,
     height: 0.40*screenHeight,
     fullscreen: true,
     modal: true,

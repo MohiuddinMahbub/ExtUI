@@ -27,8 +27,8 @@ Ext.define('Admin.view.product.OrderDetails', {
 	closable : false,
 	scrollable: true,
 	
-    width : 0.30 * screenWidthO,
-    height: 0.60 * screenHeightO,
+    width : 0.60 * screenWidthO,
+    height: 0.50 * screenHeightO,
     fullscreen: true,
     modal: true,
     centered: true,    
@@ -102,7 +102,7 @@ Ext.define('Admin.view.product.OrderDetails', {
 							items: [
 								{
 									xtype: 'fieldcontainer',
-									columnWidth : 1,
+									columnWidth : .5,
 									fieldLabel: '',
 									padding: 15,
 									items: [
@@ -170,20 +170,6 @@ Ext.define('Admin.view.product.OrderDetails', {
 											}
 										},
 										{
-											xtype: 'textfield',
-											labelWidth: 100,
-											fieldLabel: 'Stock',
-											width : '100%',
-											reference: 'stock',
-											name: 'stock',
-											afterLabelTextTpl: [
-												'<span style="color:red;font-weight:bold" data-qtip="Required">*</span>'
-											],
-											validator:function(text){
-												return (text.length==0 || Ext.util.Format.trim(text).length!=0);
-											}
-										},
-										{
 											xtype: 'numberfield',
 											labelWidth: 100,
 											fieldLabel: 'U. Price',
@@ -207,6 +193,42 @@ Ext.define('Admin.view.product.OrderDetails', {
 											fieldLabel: 'Date',
 											format: 'd/m/Y',
 											allowBlank: false,
+											afterLabelTextTpl: [
+												'<span style="color:red;font-weight:bold" data-qtip="Required">*</span>'
+											],
+											validator:function(text){
+												return (text.length==0 || Ext.util.Format.trim(text).length!=0);
+											}
+										}
+									]
+								},
+								{
+									xtype: 'fieldcontainer',
+									columnWidth : .5,
+									fieldLabel: '',
+									padding: 15,
+									items: [
+										{
+											xtype: 'textfield',
+											labelWidth: 100,
+											fieldLabel: 'Stock',
+											width : '100%',
+											reference: 'stock',
+											name: 'stock',
+											afterLabelTextTpl: [
+												'<span style="color:red;font-weight:bold" data-qtip="Required">*</span>'
+											],
+											validator:function(text){
+												return (text.length==0 || Ext.util.Format.trim(text).length!=0);
+											}
+										},
+										{
+											xtype: 'textfield',
+											labelWidth: 100,
+											fieldLabel: 'Returned',
+											width : '100%',
+											reference: 'itemReturned',
+											name: 'itemReturned',
 											afterLabelTextTpl: [
 												'<span style="color:red;font-weight:bold" data-qtip="Required">*</span>'
 											],

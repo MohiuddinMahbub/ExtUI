@@ -286,6 +286,13 @@ Ext.define('Admin.view.product.ProductController', {
 		win.lookupReference('newProduct').setHidden(true);
 		win.lookupReference('updProduct').setHidden(false);
 		
+		if (rec.data.isAvailable == 1) {
+			rec.data.isAvailable = "YES";
+		}
+		else{
+			rec.data.isAvailable = "NO";
+		}
+
 		/*Load record in form*/
 		var form = win.lookupReference('productForm').getForm();
 		form.loadRecord(rec);
@@ -321,7 +328,7 @@ Ext.define('Admin.view.product.ProductController', {
 		var jsonString = null;
 		
 		var price 			= me.lookupReference('price').value;
-		var amount 			= me.lookupReference('amount').value;
+		var isAvailable 	= me.lookupReference('isAvailable').value;
 		var quantity 		= me.lookupReference('quantity').value;
 		var productId 		= me.lookupReference('productId').value;
 		var productVer 		= me.lookupReference('productVer').value;
@@ -331,6 +338,13 @@ Ext.define('Admin.view.product.ProductController', {
 		var categoryId 		= me.lookupReference('categoryName').value;
 		var categoryName 	= me.lookupReference('categoryName').rawValue;
 
+		if (isAvailable == "YES") {
+			isAvailable = 1;
+		}
+		else{
+			isAvailable = 0;
+		}
+
 		var header = {
 			actionName: appActionType.ACTION_TYPE_NEW,
 			serviceName: appContentType.CONTENT_TYPE_PRODUCT
@@ -339,7 +353,7 @@ Ext.define('Admin.view.product.ProductController', {
 		var payload = {
 			userModifiedId	: gUserId,
 			price 			: isEmpty(price),
-			amount 			: isEmpty(amount),
+			isAvailable 	: isEmpty(isAvailable),
 			quantity 		: isEmpty(quantity),
 			productId		: isEmpty(productId),
 			productVer		: isEmpty(productVer),
@@ -356,7 +370,7 @@ Ext.define('Admin.view.product.ProductController', {
 			if (btn == 'yes') {
 				
 				if(button.reference == 'updProduct'){
-					header.actionName = appActionType.ACTION_TYPE_UPDATE_PRODUCT;
+					header.actionName = appActionType.ACTION_TYPE_UPDATE;
 				}
 				else if(button.reference == 'newProduct'){
 					payload.productId = null;
@@ -448,6 +462,189 @@ Ext.define('Admin.view.product.ProductController', {
 			Ext.getBody().unmask();
 		})
 		.done();
+	},
+
+	/**
+	* Send request to server for getting Order data
+	* @author: Md. Mahbub Hasan Mohiuddin
+	* @since 2021-01-17
+	*/
+	onSearchOrder: function(){
+		var me = this;
+		var jsonString = null;
+		Ext.getBody().mask('Loading...');
+		
+		var productName = me.lookupReference('oProduct').value;
+		var salesEntityName = me.lookupReference('oEntity').value;
+
+		var header = {
+			actionName 		: appActionType.ACTION_TYPE_SELECT_ORDER,
+			serviceName 	: appContentType.CONTENT_TYPE_SALES
+		};
+
+		var payload = {
+			userModifiedId 		: gUserId,
+			productName 		: productName,
+			salesEntityName 	: salesEntityName,
+			actionName 			: appActionType.ACTION_TYPE_SELECT_ORDER
+		};
+		
+		jsonString = mPromise.createJson(header, payload);
+		mPromise.sendRequestDeffered(SERVER_URL, jsonString, mMask)
+		.then(function (response) {
+			
+			var items = response.payload;
+
+			var store = Ext.data.StoreManager.lookup('OrderStore');
+			store.removeAll();
+			store.add(items);
+		})
+		.otherwise(function(reason){
+			me.onFailed(reason);
+		})
+		.always(function(){			
+			Ext.getBody().unmask();
+		})
+		.done();
+	},
+
+	/**
+	* Double clicking on the Sales grid to shows details form
+	* @author: mahbub.hasan
+	* @since 18 Jan 2021
+	*/
+	onOrderDblClck: function (view, rec, item, index, e) {
+
+		var win = Ext.create('Admin.view.product.OrderDetails');
+		
+		win.lookupReference('newOrder').setHidden(true);
+		win.lookupReference('updOrder').setHidden(false);
+		
+		/*Load record in form*/
+		var form = win.lookupReference('orderForm').getForm();
+		form.loadRecord(rec);
+
+		win.show();
+	},
+
+	/**
+	* Add Sales button click
+	* @author: mahbub.hasan
+	* @since 18 Jan 2021
+	*/
+	onAddOrder: function (view, rec, item, index, e) {
+
+		var win = Ext.create('Admin.view.product.OrderDetails');
+		
+		/*Load record in form*/
+		win.title = 'New Order';
+		win.lookupReference('updOrder').setHidden(true);
+		win.lookupReference('newOrder').setHidden(false);
+
+		win.show();
+	},
+
+	/**
+	* Create new Order function
+	* @author: mahbub.hasan
+	* @since 18 Jan 2021
+	*/
+	onSaveOrder: function (button, action, e) {
+
+		var me = this;
+		var jsonString = null;
+		
+		var stock 			= me.lookupReference('stock').value;
+		var quantity 		= me.lookupReference('quantity').value;
+		var unitPrice 		= me.lookupReference('unitPrice').value;
+		var itemReturned 	= me.lookupReference('itemReturned').value;
+		
+		var productId 		= me.lookupReference('productName').value;		
+		var productName 	= me.lookupReference('productName').rawValue;
+		var salesEntityId 	= me.lookupReference('salesEntityName').value;
+		var salesEntityName = me.lookupReference('salesEntityName').rawValue;		
+		
+		var orderDate 		= me.lookupReference('orderDate').value;
+		
+		var orderId 		= me.lookupReference('orderId').value;
+		var orderVer 		= me.lookupReference('orderVer').value;
+		var description 	= me.lookupReference('description').value;		
+		
+		var header = {
+			actionName: appActionType.ACTION_TYPE_NEW,
+			serviceName: appContentType.CONTENT_TYPE_SALES
+		};
+
+		var payload = {
+			userModifiedId	: gUserId,
+			orderId 		: isEmpty(orderId),
+			orderVer 		: isEmpty(orderVer),
+			stock 			: isEmpty(stock),
+			quantity 		: isEmpty(quantity),
+			unitPrice 		: isEmpty(unitPrice),
+			productId		: isEmpty(productId),
+			itemReturned 	: isEmpty(itemReturned),
+			salesEntityId	: isEmpty(salesEntityId),
+			description 	: isEmpty(description),
+			orderDate 		: isEmpty(orderDate),
+			productName 	: isEmpty(productName),
+			salesEntityName : isEmpty(salesEntityName),
+			actionName 		: appActionType.ACTION_TYPE_NEW
+		};
+
+		Ext.MessageBox.confirm('Confirm', 'Are you sure?', function(btn) {
+
+			if (btn == 'yes') {
+				
+				if(button.reference == 'updOrder'){
+					header.actionName = appActionType.ACTION_TYPE_UPDATE;
+				}
+				else if(button.reference == 'newOrder'){
+					payload.salesId = null;
+					payload.salesVer = null;
+				}
+
+				Ext.getBody().mask('Please wait...');
+				
+				me.getView().doClose();
+				
+				jsonString = mPromise.createJson(header, payload);
+
+				mPromise.sendRequestDeffered(SERVER_URL, jsonString, mMask)
+				.then(function (response) {
+					
+					var items = response.payload;
+
+					//console.log(items);
+					var header = {
+						actionName 	: appActionType.ACTION_TYPE_SELECT_ORDER,
+						serviceName : appContentType.CONTENT_TYPE_SALES
+					};
+
+					var payload = {
+						userModifiedId 	: gUserId,
+						actionName 		: appActionType.ACTION_TYPE_SELECT_ORDER
+					};
+
+					jsonString = mPromise.createJson(header, payload);
+					return mPromise.sendRequestDeffered(SERVER_URL, jsonString);				
+				})
+				.then(function (response2){
+					var items = response2.payload;
+					//console.log(items);
+					var store = Ext.data.StoreManager.lookup('OrderStore');
+					store.removeAll();
+					store.add(items);
+				})
+				.otherwise(function(reason){
+					me.onFailed(reason);
+				})
+				.always(function(){			
+					Ext.getBody().unmask();
+				})
+				.done();
+			}
+		});
 	},
 
 	/**
@@ -584,233 +781,6 @@ Ext.define('Admin.view.product.ProductController', {
 			}
 		});
 	},
-
-	/**
-	* Send request to server for getting Order data
-	* @author: Md. Mahbub Hasan Mohiuddin
-	* @since 2021-01-17
-	*/
-	onSearchOrder: function(){
-		var me = this;
-		var jsonString = null;
-		Ext.getBody().mask('Loading...');
-		
-		var productName = me.lookupReference('oProduct').value;
-		var salesEntityName = me.lookupReference('oEntity').value;
-
-		var header = {
-			actionName 		: appActionType.ACTION_TYPE_SELECT_ORDER,
-			serviceName 	: appContentType.CONTENT_TYPE_SALES
-		};
-
-		var payload = {
-			userModifiedId 		: gUserId,
-			productName 		: productName,
-			salesEntityName 	: salesEntityName,
-			actionName 			: appActionType.ACTION_TYPE_SELECT_ORDER
-		};
-		
-		jsonString = mPromise.createJson(header, payload);
-		mPromise.sendRequestDeffered(SERVER_URL, jsonString, mMask)
-		.then(function (response) {
-			
-			var items = response.payload;
-
-			var store = Ext.data.StoreManager.lookup('OrderStore');
-			store.removeAll();
-			store.add(items);
-		})
-		.otherwise(function(reason){
-			me.onFailed(reason);
-		})
-		.always(function(){			
-			Ext.getBody().unmask();
-		})
-		.done();
-	},
-
-	/**
-	* Double clicking on the Sales grid to shows details form
-	* @author: mahbub.hasan
-	* @since 18 Jan 2021
-	*/
-	onOrderDblClck: function (view, rec, item, index, e) {
-
-		var win = Ext.create('Admin.view.product.OrderDetails');
-		
-		win.lookupReference('newOrder').setHidden(true);
-		win.lookupReference('updOrder').setHidden(false);
-		
-		/*Load record in form*/
-		var form = win.lookupReference('orderForm').getForm();
-		form.loadRecord(rec);
-
-		win.show();
-	},
-
-	/**
-	* Add Sales button click
-	* @author: mahbub.hasan
-	* @since 18 Jan 2021
-	*/
-	onAddOrder: function (view, rec, item, index, e) {
-
-		var win = Ext.create('Admin.view.product.OrderDetails');
-		
-		/*Load record in form*/
-		win.title = 'New Order';
-		win.lookupReference('updOrder').setHidden(true);
-		win.lookupReference('newOrder').setHidden(false);
-
-		win.show();
-	},
-
-	/**
-	* Create new Order function
-	* @author: mahbub.hasan
-	* @since 18 Jan 2021
-	*/
-	onSaveOrder: function (button, action, e) {
-
-		var me = this;
-		var jsonString = null;
-		
-		var stock 			= me.lookupReference('stock').value;
-		var quantity 		= me.lookupReference('quantity').value;
-		var unitPrice 		= me.lookupReference('unitPrice').value;
-		
-		var productId 		= me.lookupReference('productName').value;		
-		var productName 	= me.lookupReference('productName').rawValue;
-		var salesEntityId 	= me.lookupReference('salesEntityName').value;
-		var salesEntityName = me.lookupReference('salesEntityName').rawValue;		
-		
-		var orderDate 		= me.lookupReference('orderDate').value;
-		
-		var orderId 		= me.lookupReference('orderId').value;
-		var orderVer 		= me.lookupReference('orderVer').value;
-		var description 	= me.lookupReference('description').value;		
-		
-		var header = {
-			actionName: appActionType.ACTION_TYPE_NEW_ORDER,
-			serviceName: appContentType.CONTENT_TYPE_SALES
-		};
-
-		var payload = {
-			userModifiedId	: gUserId,
-			orderId 		: isEmpty(orderId),
-			orderVer 		: isEmpty(orderVer),
-			stock 			: isEmpty(stock),
-			quantity 		: isEmpty(quantity),
-			unitPrice 		: isEmpty(unitPrice),
-			productId		: isEmpty(productId),
-			salesEntityId	: isEmpty(salesEntityId),
-			description 	: isEmpty(description),
-			orderDate 		: isEmpty(orderDate),
-			productName 	: isEmpty(productName),
-			salesEntityName : isEmpty(salesEntityName),
-			actionName 		: appActionType.ACTION_TYPE_NEW
-		};
-
-		Ext.MessageBox.confirm('Confirm', 'Are you sure?', function(btn) {
-
-			if (btn == 'yes') {
-				
-				if(button.reference == 'updOrder'){
-					header.actionName = appActionType.ACTION_TYPE_UPDATE_PRODUCT;
-				}
-				else if(button.reference == 'newOrder'){
-					payload.salesId = null;
-					payload.salesVer = null;
-				}
-
-				Ext.getBody().mask('Please wait...');
-				
-				me.getView().doClose();
-				
-				jsonString = mPromise.createJson(header, payload);
-
-				mPromise.sendRequestDeffered(SERVER_URL, jsonString, mMask)
-				.then(function (response) {
-					
-					var items = response.payload;
-
-					//console.log(items);
-					var header = {
-						actionName 	: appActionType.ACTION_TYPE_SELECT_ORDER,
-						serviceName : appContentType.CONTENT_TYPE_SALES
-					};
-
-					var payload = {
-						userModifiedId 	: gUserId,
-						actionName 		: appActionType.ACTION_TYPE_SELECT_ORDER
-					};
-
-					jsonString = mPromise.createJson(header, payload);
-					return mPromise.sendRequestDeffered(SERVER_URL, jsonString);				
-				})
-				.then(function (response2){
-					var items = response2.payload;
-					//console.log(items);
-					var store = Ext.data.StoreManager.lookup('OrderStore');
-					store.removeAll();
-					store.add(items);
-				})
-				.otherwise(function(reason){
-					me.onFailed(reason);
-				})
-				.always(function(){			
-					Ext.getBody().unmask();
-				})
-				.done();
-			}
-		});
-	},
-
-	/**
-	* @author: mahbub.hasan
-	* Filtering Product Grid data
-	* @since 21 Jan 2021
-	*/
-	/*onPGridFltr: function (component, newValue, oldValue, eOpts) {
-		var me = this;
-		
-		var grid = me.lookupReference('entityGrd');
-		grid.store.clearFilter();
-		
-		var fields = new Array(
-			'salesEntityId',
-			'salesEntityVer',
-			'typeValueId',
-			'firstName',
-			'lastName',
-			'salesEntityName',
-			'salesEntityAlias',
-			'salesEntityIdentity',
-			'salesEntityType',
-			'email',
-			'phone',
-			'address',
-			'description',
-			'dob',
-			'entryDate',
-			'exitDate'
-		);
-
-		if (newValue) {
-			var matcher = new RegExp(Ext.String.escapeRegex(newValue), "i");
-			grid.store.filter({
-				filterFn: function (record) {
-					var match = false;
-					Ext.Object.each(record.data, function (property, value) {
-						if (fields.indexOf(property) > -1) {
-							match = match || matcher.test(String(value));
-						}
-					});
-					return match;
-				}
-			});
-		}
-	},*/
 
 	onFailed: function(status) {
 		try {

@@ -34,7 +34,7 @@ Ext.define('Admin.view.main.Main', {
 					xtype: 'component',
 					reference: 'senchaLogo',
 					cls: 'sencha-logo',
-					html: '<div class="main-logo"><img src="resources/images/logo.png">n</div>',
+					html: '<div class="main-logo"><img src="resources/images/logo.png"></div>',
 					width: 250
 				},
 				{
