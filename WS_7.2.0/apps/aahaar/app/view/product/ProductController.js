@@ -794,5 +794,35 @@ Ext.define('Admin.view.product.ProductController', {
 		} catch(err){
 			console.log(err.message);
 		}
-	}
+	},
+
+	onInvoiceBtnClick : function(button, e, eOpts){
+
+		var me = this, refNo = null, branchName = null;
+		if(button.reference != "cHistInv"){
+			refNo = me.lookupReference('taskGrid').selection.data.referenceId;
+		}
+		else{
+			refNo = me.lookupReference('historyGrid').selection.data.referenceNo;
+		}
+
+		var pdfPanel = Ext.create('Ext.panel.Panel', {
+			title : "Remitter Transaction Report",
+			itemId : 'smsPdfReportPanel',
+			reference :'smsPdfPanel1',
+			border : true,
+			closable : true,
+			floatable : true,
+			floating : true,
+			draggable : true,          
+			width : (window.innerWidth)*0.8,
+			height : (window.innerHeight)*0.9
+		});
+
+		pdfPanel.show();
+
+		var urlReq='<iframe style="overflow:auto;width:100%;height:100%;" frameborder="0"  src="'+httpReport+'?destination=custInvoiceRpt&refNo='+refNo+'"></iframe>';
+		
+		pdfPanel.body.update(urlReq);    
+	},
 });
