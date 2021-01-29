@@ -241,7 +241,7 @@ Ext.define('Admin.view.product.OrderDetails', {
 											reference: 'description',
 											labelWidth: 100,
 											width : '100%',
-											fieldLabel: 'Description',
+											fieldLabel: 'Location',
 											name: 'description'
 										},
 										{

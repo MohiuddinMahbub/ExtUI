@@ -64,7 +64,10 @@ Ext.define('Admin.model.Sales', {
 		},
 		{
 			type: 'date',
-			name: 'orderDate'
+			name: 'orderDate',
+			convert: function(v, record ) {
+				return new Date(record.get('orderDate'))
+			}
 		},
 		{
 			type: 'string',

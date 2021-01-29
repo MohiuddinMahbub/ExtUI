@@ -52,6 +52,29 @@ Ext.define('Admin.view.product.Product',{
 							listeners: {
 								click: 'onSearchSales'
 							}
+						},
+						{
+							xtype: 'button',
+							padding: 2,
+							margin : '0 0 0 10',
+							text: 'Report',
+							iconCls: 'fa fa-file-pdf',
+							reference: 'agentRpt',
+							listeners: {
+								click: 'getAgentRpt'
+							}
+						},
+						'->',
+						{
+							xtype: 'button',
+							margin: '0 0 0 10',
+							text: 'Add',
+							style: 'border: groove',
+							reference:'addExpense',
+							iconCls: 'fa fa-plus-circle',
+							listeners: {
+								click: 'onAddExpense'
+							}
 						}
 					]
 				}
@@ -123,11 +146,18 @@ Ext.define('Admin.view.product.Product',{
 				{
 					xtype: 'datecolumn',
 					text: 'Date',
-					dataIndex: 'salesDate',
+					dataIndex: 'orderDate',
 					renderer: Ext.util.Format.dateRenderer('d-M-y'),
-					hidden: true,
 					filter: {
 						type: 'date'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Location',
+					dataIndex: 'description',
+					filter: {
+						type: 'string'
 					}
 				},
 				{
@@ -272,22 +302,21 @@ Ext.define('Admin.view.product.Product',{
 					}
 				},
 				{
-					xtype: 'gridcolumn',
-					text: 'Desc.',
-					width: 500,
-					dataIndex: 'description',
-					filter: {
-						type: 'string'
-					}
-				},
-				{
 					xtype: 'datecolumn',
 					text: 'Date',
 					dataIndex: 'orderDate',
 					renderer: Ext.util.Format.dateRenderer('d-M-y'),
-					hidden: true,
 					filter: {
 						type: 'date'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Location',
+					width: 500,
+					dataIndex: 'description',
+					filter: {
+						type: 'string'
 					}
 				},
 				{

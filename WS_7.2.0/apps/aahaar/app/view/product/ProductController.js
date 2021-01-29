@@ -648,37 +648,37 @@ Ext.define('Admin.view.product.ProductController', {
 	},
 
 	/**
-	* Double clicking on the Sales grid to shows details form
+	* Double clicking on the Expense grid to shows details form
 	* @author: mahbub.hasan
 	* @since 18 Jan 2021
 	*/
-	onSalesDblClck: function (view, rec, item, index, e) {
+	onExpenseDblClck: function (view, rec, item, index, e) {
 
-		var win = Ext.create('Admin.view.product.SalesDetails');
+		var win = Ext.create('Admin.view.product.ExpenseDetails');
 		
-		win.lookupReference('newSales').setHidden(true);
-		win.lookupReference('updSales').setHidden(false);
+		win.lookupReference('newExpense').setHidden(true);
+		win.lookupReference('updExpense').setHidden(false);
 		
 		/*Load record in form*/
-		var form = win.lookupReference('salesForm').getForm();
+		var form = win.lookupReference('expenseForm').getForm();
 		form.loadRecord(rec);
 
 		win.show();
 	},
 
 	/**
-	* Add Sales button click
+	* Add Expense button click
 	* @author: mahbub.hasan
 	* @since 18 Jan 2021
 	*/
-	onAddSales: function (view, rec, item, index, e) {
+	onAddExpense: function (view, rec, item, index, e) {
 
-		var win = Ext.create('Admin.view.product.SalesDetails');
+		var win = Ext.create('Admin.view.product.ExpenseDetails');
 		
 		/*Load record in form*/
-		win.title = 'New Sales Entry';
-		win.lookupReference('updSales').setHidden(true);
-		win.lookupReference('newSales').setHidden(false);
+		win.title = 'Expense Entry';
+		win.lookupReference('updExpense').setHidden(true);
+		win.lookupReference('newExpense').setHidden(false);
 
 		win.show();
 	},
@@ -688,42 +688,34 @@ Ext.define('Admin.view.product.ProductController', {
 	* @author: mahbub.hasan
 	* @since 18 Jan 2021
 	*/
-	onSaveSales: function (button, action, e) {
+	onSaveExpense: function (button, action, e) {
 
 		var me = this;
 		var jsonString = null;
 		
-		var quantity 		= me.lookupReference('quantity').value;
-		var unitPrice 		= me.lookupReference('unitPrice').value;
-		
-		var productId 		= me.lookupReference('productName').value;		
-		var productName 	= me.lookupReference('productName').rawValue;
-		var salesEntityId 	= me.lookupReference('salesEntityName').value;
-		var salesEntityName = me.lookupReference('salesEntityName').rawValue;		
-		
-		var salesDate 		= me.lookupReference('salesDate').value;
-		
 		var salesId 		= me.lookupReference('salesId').value;
 		var salesVer 		= me.lookupReference('salesVer').value;
+		var unitPrice 		= me.lookupReference('unitPrice').value;		
+		var salesDate 		= me.lookupReference('salesDate').value;		
 		var description 	= me.lookupReference('description').value;		
 		
 		var header = {
-			actionName: appActionType.ACTION_TYPE_NEW,
+			actionName: appActionType.ACTION_TYPE_NEW_EXPENSE,
 			serviceName: appContentType.CONTENT_TYPE_SALES
 		};
 
 		var payload = {
+			quantity 		: null,
+			productName 	: null,
+			salesEntityName : null,
+			salesEntityId	: null,
+			productId		: null,
 			userModifiedId	: gUserId,
 			salesId 		: isEmpty(salesId),
 			salesVer 		: isEmpty(salesVer),
-			quantity 		: isEmpty(quantity),
 			unitPrice 		: isEmpty(unitPrice),
-			productId		: isEmpty(productId),
-			salesEntityId	: isEmpty(salesEntityId),
 			description 	: isEmpty(description),
 			salesDate 		: isEmpty(salesDate),
-			productName 	: isEmpty(productName),
-			salesEntityName : isEmpty(salesEntityName),
 			actionName 		: appActionType.ACTION_TYPE_NEW
 		};
 
@@ -731,10 +723,10 @@ Ext.define('Admin.view.product.ProductController', {
 
 			if (btn == 'yes') {
 				
-				if(button.reference == 'updSales'){
-					header.actionName = appActionType.ACTION_TYPE_UPDATE_PRODUCT;
+				if(button.reference == 'updExpense'){
+					header.actionName = appActionType.ACTION_TYPE_UPDATE_EXPENSE;
 				}
-				else if(button.reference == 'newSales'){
+				else if(button.reference == 'newExpense'){
 					payload.salesId = null;
 					payload.salesVer = null;
 				}
@@ -748,29 +740,30 @@ Ext.define('Admin.view.product.ProductController', {
 				mPromise.sendRequestDeffered(SERVER_URL, jsonString, mMask)
 				.then(function (response) {
 					
-					var items = response.payload;
+					Ext.MessageBox.Alert("Added Expense", "Please Check Report");
+					//var items = response.payload;
 
 					//console.log(items);
-					var header = {
-						actionName 	: appActionType.ACTION_TYPE_SELECT_SALES,
-						serviceName : appContentType.CONTENT_TYPE_SALES
-					};
+					// var header = {
+					// 	actionName 	: appActionType.ACTION_TYPE_SELECT_SALES,
+					// 	serviceName : appContentType.CONTENT_TYPE_SALES
+					// };
 
-					var payload = {
-						userModifiedId 	: gUserId,
-						actionName 		: appActionType.ACTION_TYPE_SELECT_SALES
-					};
+					// var payload = {
+					// 	userModifiedId 	: gUserId,
+					// 	actionName 		: appActionType.ACTION_TYPE_SELECT_SALES
+					// };
 
-					jsonString = mPromise.createJson(header, payload);
-					return mPromise.sendRequestDeffered(SERVER_URL, jsonString);				
+					// jsonString = mPromise.createJson(header, payload);
+					// return mPromise.sendRequestDeffered(SERVER_URL, jsonString);				
 				})
-				.then(function (response2){
-					var items = response2.payload;
-					//console.log(items);
-					var store = Ext.data.StoreManager.lookup('SalesStore');
-					store.removeAll();
-					store.add(items);
-				})
+				// .then(function (response2){
+				// 	var items = response2.payload;
+				// 	//console.log(items);
+				// 	var store = Ext.data.StoreManager.lookup('SalesStore');
+				// 	store.removeAll();
+				// 	store.add(items);
+				// })
 				.otherwise(function(reason){
 					me.onFailed(reason);
 				})
@@ -796,20 +789,16 @@ Ext.define('Admin.view.product.ProductController', {
 		}
 	},
 
-	onInvoiceBtnClick : function(button, e, eOpts){
+	getAgentRpt: function(button, e, eOpts){
 
-		var me = this, refNo = null, branchName = null;
-		if(button.reference != "cHistInv"){
-			refNo = me.lookupReference('taskGrid').selection.data.referenceId;
-		}
-		else{
-			refNo = me.lookupReference('historyGrid').selection.data.referenceNo;
-		}
-
+		var me = this, identityNo = null;
+		var fromDate    = Ext.Date.format(new Date(), 'Y-m-d');
+		var toDate      = Ext.Date.format(new Date(), 'Y-m-d');
+		
+		
 		var pdfPanel = Ext.create('Ext.panel.Panel', {
-			title : "Remitter Transaction Report",
-			itemId : 'smsPdfReportPanel',
-			reference :'smsPdfPanel1',
+			title : "Agent Sales Report",
+			reference :'asr',
 			border : true,
 			closable : true,
 			floatable : true,
@@ -821,7 +810,9 @@ Ext.define('Admin.view.product.ProductController', {
 
 		pdfPanel.show();
 
-		var urlReq='<iframe style="overflow:auto;width:100%;height:100%;" frameborder="0"  src="'+httpReport+'?destination=custInvoiceRpt&refNo='+refNo+'"></iframe>';
+		var urlReq='<iframe style="overflow:auto;width:100%;height:100%;" frameborder="0" src="'
+		+REPORT_URL+'?destination=agentRpt&identityNo='
+		+identityNo+'&fromDate='+fromDate+'&toDate='+toDate+'"></iframe>';
 		
 		pdfPanel.body.update(urlReq);    
 	},

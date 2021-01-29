@@ -1,10 +1,10 @@
 var screenWidthS = (window.innerWidth > 0) ? window.innerWidth : screen.width;
 var screenHeightS = (window.innerHeight > 0) ? window.innerHeight : screen.height;
 
-Ext.define('Admin.view.product.SalesDetails', {
+Ext.define('Admin.view.product.ExpenseDetails', {
 	extend : 'Ext.window.Window',
-	alias: 'widget.salesDetails',
-	reference: 'salesDetails',
+	alias: 'widget.expenseDetails',
+	reference: 'expenseDetails',
 	requires: [
 		'Ext.Img',
 		'Ext.form.*',
@@ -44,7 +44,7 @@ Ext.define('Admin.view.product.SalesDetails', {
 				{
 					xtype: 'form',
 					bodyPadding: 5,
-					reference: 'salesForm',
+					reference: 'expenseForm',
 					border: 'true',
 					dockedItems:[
 						{
@@ -56,11 +56,11 @@ Ext.define('Admin.view.product.SalesDetails', {
 									margin: '0 0 0 10',
 									text: 'Save',
 									style: 'border: groove',
-									reference:'updSales',
+									reference:'updExpense',
 									iconCls: 'update',
 									hidden: true,
 									listeners: {
-										click: 'onSaveSales'
+										click: 'onSaveExpense'
 									}
 								},
 								{
@@ -68,11 +68,11 @@ Ext.define('Admin.view.product.SalesDetails', {
 									margin: '0 0 0 10',
 									text: 'Save',
 									style: 'border: groove',
-									reference:'newSales',
+									reference:'newExpense',
 									iconCls: 'update',
 									hidden: true,
 									listeners: {
-										click: 'onSaveSales'
+										click: 'onSaveExpense'
 									}
 								},
 								{
@@ -107,72 +107,17 @@ Ext.define('Admin.view.product.SalesDetails', {
 									padding: 15,
 									items: [
 										{
-											xtype: 'combobox',
+											xtype: 'textareafield',
+											reference: 'description',
 											labelWidth: 100,
 											width : '100%',
-											reference: 'productName',
-											fieldLabel: 'Product',
-											displayField: 'productName',
-											valueField: 'productId',
-											editable: true,
-											name: 'productId',
-											queryMode: 'local',
-											triggerAction: 'all',
-											allowBlank: false,
-											emptyText: 'Product',
-											afterLabelTextTpl: [
-												'<span style="color:red;font-weight:bold" data-qtip="Required">*</span>'
-											],
-											validator:function(text){
-												return (text.length==0 || Ext.util.Format.trim(text).length!=0);
-											},
-											bind: {
-												store: 'ProductStore'
-											}
-										},
-										{
-											xtype: 'combobox',
-											labelWidth: 100,
-											width : '100%',
-											reference: 'salesEntityName',
-											fieldLabel: 'Entity',
-											displayField: 'salesEntityName',
-											valueField: 'salesEntityId',
-											editable: true,
-											name: 'salesEntityId',
-											queryMode: 'local',
-											triggerAction: 'all',
-											allowBlank: false,
-											emptyText: 'Entity',
-											afterLabelTextTpl: [
-												'<span style="color:red;font-weight:bold" data-qtip="Required">*</span>'
-											],
-											validator:function(text){
-												return (text.length==0 || Ext.util.Format.trim(text).length!=0);
-											},
-											bind: {
-												store: 'EntityStore'
-											}
-										},
-										{
-											xtype: 'textfield',
-											reference: 'quantity',
-											name: 'quantity',
-											labelWidth: 100,
-											width : '100%',
-											allowBlank: false,
-											fieldLabel: 'Quantity',
-											afterLabelTextTpl: [
-												'<span style="color:red;font-weight:bold" data-qtip="Required">*</span>'
-											],
-											validator:function(text){
-												return (text.length==0 || Ext.util.Format.trim(text).length!=0);
-											}
+											fieldLabel: 'Reason',
+											name: 'description'
 										},
 										{
 											xtype: 'numberfield',
 											labelWidth: 100,
-											fieldLabel: 'U. Price',
+											fieldLabel: 'Amount',
 											width : '100%',
 											reference: 'unitPrice',
 											name: 'unitPrice',
@@ -199,14 +144,6 @@ Ext.define('Admin.view.product.SalesDetails', {
 											validator:function(text){
 												return (text.length==0 || Ext.util.Format.trim(text).length!=0);
 											}
-										},
-										{
-											xtype: 'textareafield',
-											reference: 'description',
-											labelWidth: 100,
-											width : '100%',
-											fieldLabel: 'Description',
-											name: 'description'
 										},
 										{
 											xtype: 'textfield',
