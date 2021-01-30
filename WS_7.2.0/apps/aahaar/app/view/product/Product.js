@@ -13,7 +13,7 @@ Ext.define('Admin.view.product.Product',{
 		type: 'product-product'
 	},
 	
-	cls: 'shadow',
+	//cls: 'shadow',
 	margin: 10,
 	listeners: {
 		render: 'onRender'

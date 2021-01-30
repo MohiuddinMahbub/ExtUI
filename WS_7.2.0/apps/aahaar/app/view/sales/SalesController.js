@@ -4,15 +4,13 @@ Ext.define('Admin.view.sales.SalesController', {
 
 	getSalesRpt: function(button, e, eOpts){
 
-		var me = this, identityNo = null;
-		var fromDate    = Ext.Date.format(new Date(), 'Y-m-d');
-		var toDate      = Ext.Date.format(new Date(), 'Y-m-d');
+		var me = this;
+		var fromDate    = Ext.Date.format(me.lookupReference('salesDate').value, 'Y-m-d');
 		
 		var reportPanel = me.lookupReference('salesReport');
 
 		var urlReq='<iframe style="overflow:auto;width:100%;height:100%;" frameborder="0" src="'
-		+REPORT_URL+'?destination=agentRpt&identityNo='
-		+identityNo+'&fromDate='+fromDate+'&toDate='+toDate+'"></iframe>';
+		+REPORT_URL+'?destination=getSalesRpt&fromDate='+fromDate+'"></iframe>';
 		
 		reportPanel.body.update(urlReq);    
 	},

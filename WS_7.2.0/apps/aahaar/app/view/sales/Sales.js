@@ -12,7 +12,7 @@ Ext.define('Admin.view.sales.Sales',{
 	viewModel: {
 		type: 'sales-sales'
 	},
-	cls: 'shadow',
+
 	margin: 10,
 
 	items: [
@@ -20,26 +20,21 @@ Ext.define('Admin.view.sales.Sales',{
 			xtype: 'panel',
 			reference: 'salesReport',
 			title: 'Sales',
-			iconCls: 'x-fa fa-paper-plane',
+			iconCls: 'x-fa fa-balance-scale',
 			width : '100%',
 			dockedItems: [
 				{
 					xtype: 'toolbar',
 					dock: 'top',
 					items : [
-						{
-							xtype: 'textfield',
-							emptyText: 'Identity',
-							reference: 'identityNo',
-							margin : '0 0 0 10',
-							width: 200
-						},
+						
 						{
 							xtype: 'datefield',
-							emptyText: 'Date',
 							format: 'd/m/Y',
+							fieldLabel: 'Date',
 							margin : '0 0 0 10',
-							width: 200,
+							labelWidth: 40,
+							width: 150,
 							reference: 'salesDate',
 							maxValue: new Date(),
 							listeners: {
@@ -56,7 +51,7 @@ Ext.define('Admin.view.sales.Sales',{
 							iconCls: 'fa fa-file-pdf',
 							reference: 'salesRpt',
 							listeners: {
-								click: 'getAgentRpt'
+								click: 'getSalesRpt'
 							}
 						}						
 					]
@@ -67,7 +62,7 @@ Ext.define('Admin.view.sales.Sales',{
 			xtype: 'panel',
 			reference: 'entityReport',
 			title: 'Entity Report',
-			iconCls: 'x-fa fa-home',
+			iconCls: 'x-fa fa-paper-plane',
 			width : '100%',
 			dockedItems: [
 				{
