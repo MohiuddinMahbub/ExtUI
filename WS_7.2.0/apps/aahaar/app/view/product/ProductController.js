@@ -787,33 +787,5 @@ Ext.define('Admin.view.product.ProductController', {
 		} catch(err){
 			console.log(err.message);
 		}
-	},
-
-	getAgentRpt: function(button, e, eOpts){
-
-		var me = this, identityNo = null;
-		var fromDate    = Ext.Date.format(new Date(), 'Y-m-d');
-		var toDate      = Ext.Date.format(new Date(), 'Y-m-d');
-		
-		
-		var pdfPanel = Ext.create('Ext.panel.Panel', {
-			title : "Agent Sales Report",
-			reference :'asr',
-			border : true,
-			closable : true,
-			floatable : true,
-			floating : true,
-			draggable : true,          
-			width : (window.innerWidth)*0.8,
-			height : (window.innerHeight)*0.9
-		});
-
-		pdfPanel.show();
-
-		var urlReq='<iframe style="overflow:auto;width:100%;height:100%;" frameborder="0" src="'
-		+REPORT_URL+'?destination=agentRpt&identityNo='
-		+identityNo+'&fromDate='+fromDate+'&toDate='+toDate+'"></iframe>';
-		
-		pdfPanel.body.update(urlReq);    
-	},
+	}
 });

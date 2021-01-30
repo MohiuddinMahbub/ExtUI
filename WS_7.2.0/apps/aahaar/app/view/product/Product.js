@@ -53,17 +53,6 @@ Ext.define('Admin.view.product.Product',{
 								click: 'onSearchSales'
 							}
 						},
-						{
-							xtype: 'button',
-							padding: 2,
-							margin : '0 0 0 10',
-							text: 'Report',
-							iconCls: 'fa fa-file-pdf',
-							reference: 'agentRpt',
-							listeners: {
-								click: 'getAgentRpt'
-							}
-						},
 						'->',
 						{
 							xtype: 'button',
