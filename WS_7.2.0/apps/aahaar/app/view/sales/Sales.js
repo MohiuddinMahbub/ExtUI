@@ -90,12 +90,6 @@ Ext.define('Admin.view.sales.Sales',{
 							queryMode: 'local',
 							triggerAction: 'all',
 							emptyText: 'Agent or Vendor',
-							afterLabelTextTpl: [
-								'<span style="color:red;font-weight:bold" data-qtip="Required">*</span>'
-							],
-							validator:function(text){
-								return (text.length==0 || Ext.util.Format.trim(text).length!=0);
-							},
 							bind: {
 								store: 'SeTypes'
 							}
