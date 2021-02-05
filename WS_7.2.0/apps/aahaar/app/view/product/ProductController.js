@@ -421,50 +421,6 @@ Ext.define('Admin.view.product.ProductController', {
 	},
 
 	/**
-	* Send request to server for getting Sales data
-	* @author: Md. Mahbub Hasan Mohiuddin
-	* @since 2021-01-17
-	*/
-	onSearchSales: function(){
-		var me = this;
-		var jsonString = null;
-		Ext.getBody().mask('Loading...');
-		
-		var productName = me.lookupReference('sProduct').value;
-		var salesEntityName = me.lookupReference('sEntity').value;
-
-		var header = {
-			actionName 		: appActionType.ACTION_TYPE_SELECT_SALES,
-			serviceName 	: appContentType.CONTENT_TYPE_SALES
-		};
-
-		var payload = {
-			userModifiedId 		: gUserId,
-			productName 		: productName,
-			salesEntityName 	: salesEntityName,
-			actionName 			: appActionType.ACTION_TYPE_SELECT_SALES
-		};
-		
-		jsonString = mPromise.createJson(header, payload);
-		mPromise.sendRequestDeffered(SERVER_URL, jsonString, mMask)
-		.then(function (response) {
-			
-			var items = response.payload;
-
-			var store = Ext.data.StoreManager.lookup('SalesStore');
-			store.removeAll();
-			store.add(items);
-		})
-		.otherwise(function(reason){
-			me.onFailed(reason);
-		})
-		.always(function(){			
-			Ext.getBody().unmask();
-		})
-		.done();
-	},
-
-	/**
 	* Send request to server for getting Order data
 	* @author: Md. Mahbub Hasan Mohiuddin
 	* @since 2021-01-17
@@ -472,11 +428,20 @@ Ext.define('Admin.view.product.ProductController', {
 	onSearchOrder: function(){
 		var me = this;
 		var jsonString = null;
+		
+		var orderDate 			= me.lookupReference('orderDate').value;
+		var productName 		= me.lookupReference('oProduct').value;
+		var salesEntityIdentity	= me.lookupReference('oEntity').value;
+
+		if (Ext.isEmpty(orderDate)) {
+			orderDate = null;
+		}
+		else{
+			orderDate = Ext.Date.format(orderDate, 'Ymd');
+		}
+
 		Ext.getBody().mask('Loading...');
 		
-		var productName = me.lookupReference('oProduct').value;
-		var salesEntityName = me.lookupReference('oEntity').value;
-
 		var header = {
 			actionName 		: appActionType.ACTION_TYPE_SELECT_ORDER,
 			serviceName 	: appContentType.CONTENT_TYPE_SALES
@@ -484,8 +449,9 @@ Ext.define('Admin.view.product.ProductController', {
 
 		var payload = {
 			userModifiedId 		: gUserId,
-			productName 		: productName,
-			salesEntityName 	: salesEntityName,
+			orderDate 			: orderDate,
+			productName 		: isEmpty(productName),
+			salesEntityIdentity	: isEmpty(salesEntityIdentity),
 			actionName 			: appActionType.ACTION_TYPE_SELECT_ORDER
 		};
 		
@@ -506,6 +472,12 @@ Ext.define('Admin.view.product.ProductController', {
 			Ext.getBody().unmask();
 		})
 		.done();
+	},
+	
+	onClearOrder: function (view, rec, item, index, e) {
+		this.lookupReference('oProduct').reset();
+		this.lookupReference('oEntity').reset();
+		this.lookupReference('orderDate').reset();
 	},
 
 	/**
@@ -636,134 +608,6 @@ Ext.define('Admin.view.product.ProductController', {
 					store.removeAll();
 					store.add(items);
 				})
-				.otherwise(function(reason){
-					me.onFailed(reason);
-				})
-				.always(function(){			
-					Ext.getBody().unmask();
-				})
-				.done();
-			}
-		});
-	},
-
-	/**
-	* Double clicking on the Expense grid to shows details form
-	* @author: mahbub.hasan
-	* @since 18 Jan 2021
-	*/
-	onExpenseDblClck: function (view, rec, item, index, e) {
-
-		var win = Ext.create('Admin.view.product.ExpenseDetails');
-		
-		win.lookupReference('newExpense').setHidden(true);
-		win.lookupReference('updExpense').setHidden(false);
-		
-		/*Load record in form*/
-		var form = win.lookupReference('expenseForm').getForm();
-		form.loadRecord(rec);
-
-		win.show();
-	},
-
-	/**
-	* Add Expense button click
-	* @author: mahbub.hasan
-	* @since 18 Jan 2021
-	*/
-	onAddExpense: function (view, rec, item, index, e) {
-
-		var win = Ext.create('Admin.view.product.ExpenseDetails');
-		
-		/*Load record in form*/
-		win.title = 'Expense Entry';
-		win.lookupReference('updExpense').setHidden(true);
-		win.lookupReference('newExpense').setHidden(false);
-
-		win.show();
-	},
-
-	/**
-	* Create new Sales function
-	* @author: mahbub.hasan
-	* @since 18 Jan 2021
-	*/
-	onSaveExpense: function (button, action, e) {
-
-		var me = this;
-		var jsonString = null;
-		
-		var salesId 		= me.lookupReference('salesId').value;
-		var salesVer 		= me.lookupReference('salesVer').value;
-		var unitPrice 		= me.lookupReference('unitPrice').value;		
-		var salesDate 		= me.lookupReference('salesDate').value;		
-		var description 	= me.lookupReference('description').value;		
-		
-		var header = {
-			actionName: appActionType.ACTION_TYPE_NEW_EXPENSE,
-			serviceName: appContentType.CONTENT_TYPE_SALES
-		};
-
-		var payload = {
-			quantity 		: null,
-			productName 	: null,
-			salesEntityName : null,
-			salesEntityId	: null,
-			productId		: null,
-			userModifiedId	: gUserId,
-			salesId 		: isEmpty(salesId),
-			salesVer 		: isEmpty(salesVer),
-			unitPrice 		: isEmpty(unitPrice),
-			description 	: isEmpty(description),
-			salesDate 		: isEmpty(salesDate),
-			actionName 		: appActionType.ACTION_TYPE_NEW
-		};
-
-		Ext.MessageBox.confirm('Confirm', 'Are you sure?', function(btn) {
-
-			if (btn == 'yes') {
-				
-				if(button.reference == 'updExpense'){
-					header.actionName = appActionType.ACTION_TYPE_UPDATE_EXPENSE;
-				}
-				else if(button.reference == 'newExpense'){
-					payload.salesId = null;
-					payload.salesVer = null;
-				}
-
-				Ext.getBody().mask('Please wait...');
-				
-				me.getView().doClose();
-				
-				jsonString = mPromise.createJson(header, payload);
-
-				mPromise.sendRequestDeffered(SERVER_URL, jsonString, mMask)
-				.then(function (response) {
-					
-					Ext.MessageBox.Alert("Added Expense", "Please Check Report");
-					//var items = response.payload;
-
-					//console.log(items);
-					// var header = {
-					// 	actionName 	: appActionType.ACTION_TYPE_SELECT_SALES,
-					// 	serviceName : appContentType.CONTENT_TYPE_SALES
-					// };
-
-					// var payload = {
-					// 	userModifiedId 	: gUserId,
-					// 	actionName 		: appActionType.ACTION_TYPE_SELECT_SALES
-					// };
-
-					// jsonString = mPromise.createJson(header, payload);
-					// return mPromise.sendRequestDeffered(SERVER_URL, jsonString);				
-				})
-				// .then(function (response2){
-				// 	var items = response2.payload;
-				// 	//console.log(items);
-				// 	var store = Ext.data.StoreManager.lookup('SalesStore');
-				// 	store.removeAll();
-				// 	store.add(items);
-				// })
 				.otherwise(function(reason){
 					me.onFailed(reason);
 				})

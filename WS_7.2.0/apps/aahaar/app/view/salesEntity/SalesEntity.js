@@ -63,23 +63,19 @@ Ext.define('Admin.view.salesEntity.SalesEntity',{
 							margin : '0 0 0 10',
 							width: 200
 						},
+						'->',
 						{
 							xtype: 'button',
 							padding: 2,
 							margin : '0 0 0 10',
 							text: 'Search',
+							style: 'border: groove',
 							iconCls: 'fa fa-search',
 							reference: 'enttSrcBtn',
 							listeners: {
 								click: 'onSearchSe'
 							}
-						}
-					]
-				},
-				{
-					xtype: 'toolbar',
-					dock: 'top',
-					items: [
+						},
 						{
 							xtype: 'button',
 							margin: '0 0 0 10',
@@ -90,7 +86,13 @@ Ext.define('Admin.view.salesEntity.SalesEntity',{
 							listeners: {
 								click: 'onSeAdd'
 							}
-						},
+						}
+					]
+				},
+				{
+					xtype: 'toolbar',
+					dock: 'top',
+					items: [
 						{
 							xtype: 'textfield',
 							reference:'grdFilter',

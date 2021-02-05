@@ -17,17 +17,27 @@ Ext.define('Admin.view.sales.Sales',{
 
 	items: [
 		{
-			xtype: 'panel',
-			reference: 'salesReport',
 			title: 'Sales',
 			iconCls: 'x-fa fa-balance-scale',
-			width : '100%',
 			dockedItems: [
 				{
 					xtype: 'toolbar',
 					dock: 'top',
-					items : [
-						
+					items: [
+						{
+							xtype: 'textfield',
+							reference:'sProduct',
+							emptyText: 'Product',
+							margin : '0 0 0 10',
+							width: 150
+						},
+						{
+							xtype: 'textfield',
+							reference:'sEntity',
+							emptyText: 'Entity Id',
+							margin : '0 0 0 10',
+							width: 150
+						},
 						{
 							xtype: 'datefield',
 							format: 'd/m/Y',
@@ -35,7 +45,7 @@ Ext.define('Admin.view.sales.Sales',{
 							margin : '0 0 0 10',
 							labelWidth: 40,
 							width: 150,
-							reference: 'salesDate',
+							reference: 'orderDate',
 							maxValue: new Date(),
 							listeners: {
 								render: function(datefield) {
@@ -46,22 +56,168 @@ Ext.define('Admin.view.sales.Sales',{
 						'->',
 						{
 							xtype: 'button',
-							padding: 2,
+							text: 'Clear',
+							style: 'border: groove',
+							iconCls: 'fa fa-eraser',
+							reference: 'orderClrBtn',
+							listeners: {
+								click: 'onClear'
+							}
+						},
+						{
+							xtype: 'button',
+							text: 'Search',
+							margin : '0 0 0 10',
+							style: 'border: groove',
+							iconCls: 'fa fa-search',
+							reference: 'salesSrcBtn',
+							listeners: {
+								click: 'onSearchSales'
+							}
+						},
+						{
+							xtype: 'button',
 							text: 'Report',
+							margin: '0 0 0 10',
+							style: 'border: groove',
 							iconCls: 'fa fa-file-pdf',
 							reference: 'salesRpt',
 							listeners: {
 								click: 'getSalesRpt'
 							}
-						}						
+						},
+						{
+							xtype: 'button',
+							margin: '0 0 0 10',
+							text: 'Add',
+							style: 'border: groove',
+							reference:'addExpense',
+							iconCls: 'fa fa-plus-circle',
+							listeners: {
+								click: 'onAddExpense'
+							}
+						}
 					]
 				}
-			]
+			],
+			xtype: 'gridpanel',
+			height: 0.87 * (window.innerHeight),
+			reference: 'salesGrd',
+			bind: {
+				store: 'SalesStore'
+			},
+			columns: [
+				{
+					xtype: 'gridcolumn',
+					text: 'Product',
+					dataIndex: 'productName',
+					filter: {
+						type: 'string'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Category',
+					dataIndex: 'categoryName',
+					filter: {
+						type: 'string'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Quantity',
+					dataIndex: 'quantity',
+					filter: {
+						type: 'number'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Entity Id',
+					dataIndex: 'salesEntityIdentity',
+					filter: {
+						type: 'string'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Returned',
+					dataIndex: 'itemReturned',
+					filter: {
+						type: 'number'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Unit Price',
+					dataIndex: 'unitPrice',
+					filter: {
+						type: 'number'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Total',
+					dataIndex: 'totalAmount',
+					filter: {
+						type: 'number'
+					}
+				},
+				{
+					xtype: 'datecolumn',
+					text: 'Date',
+					dataIndex: 'orderDate',
+					renderer: Ext.util.Format.dateRenderer('d-M-y'),
+					filter: {
+						type: 'date'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Location',
+					dataIndex: 'description',
+					filter: {
+						type: 'string'
+					}
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Id',
+					dataIndex: 'salesId',
+					hidden: true
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'Ver',
+					dataIndex: 'salesVer',
+					hidden: true
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'P. Id',
+					dataIndex: 'productId',
+					hidden: true
+				},
+				{
+					xtype: 'gridcolumn',
+					text: 'E. Id',
+					dataIndex: 'salesEntityId',
+					hidden: true
+				}
+			],
+			plugins: [
+				{
+					ptype: 'gridfilters'
+				}
+			],
+			viewConfig: {
+				enableTextSelection : true
+			}
 		},
 		{
 			xtype: 'panel',
-			reference: 'entityReport',
 			title: 'Entity Report',
+			reference: 'entityReport',
 			iconCls: 'x-fa fa-paper-plane',
 			width : '100%',
 			dockedItems: [

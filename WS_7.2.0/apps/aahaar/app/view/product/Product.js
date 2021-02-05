@@ -21,169 +21,6 @@ Ext.define('Admin.view.product.Product',{
 
 	items: [
 		{
-			title: 'Sales',
-			iconCls: 'x-fa fa-home',
-			dockedItems: [
-				{
-					xtype: 'toolbar',
-					dock: 'top',
-					items: [
-						{
-							xtype: 'textfield',
-							reference:'sProduct',
-							emptyText: 'Product',
-							margin : '0 0 0 10',
-							width: 200
-						},
-						{
-							xtype: 'textfield',
-							reference:'sEntity',
-							emptyText: 'Entity Id',
-							margin : '0 0 0 10',
-							width: 200
-						},
-						{
-							xtype: 'button',
-							padding: 2,
-							margin : '0 0 0 10',
-							text: 'Search',
-							iconCls: 'fa fa-search',
-							reference: 'salesSrcBtn',
-							listeners: {
-								click: 'onSearchSales'
-							}
-						},
-						'->',
-						{
-							xtype: 'button',
-							margin: '0 0 0 10',
-							text: 'Add',
-							style: 'border: groove',
-							reference:'addExpense',
-							iconCls: 'fa fa-plus-circle',
-							listeners: {
-								click: 'onAddExpense'
-							}
-						}
-					]
-				}
-			],
-			xtype: 'gridpanel',
-			height: 0.87 * (window.innerHeight),
-			reference: 'salesGrd',
-			bind: {
-				// Bind Store that refers data store data model
-				store: 'SalesStore'
-			},
-			columns: [
-				{
-					xtype: 'gridcolumn',
-					text: 'Product',
-					dataIndex: 'productName',
-					filter: {
-						type: 'string'
-					}
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'Category',
-					dataIndex: 'categoryName',
-					filter: {
-						type: 'string'
-					}
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'Quantity',
-					dataIndex: 'quantity',
-					filter: {
-						type: 'number'
-					}
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'Entity Id',
-					dataIndex: 'salesEntityIdentity',
-					filter: {
-						type: 'string'
-					}
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'Returned',
-					dataIndex: 'itemReturned',
-					filter: {
-						type: 'number'
-					}
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'Unit Price',
-					dataIndex: 'unitPrice',
-					filter: {
-						type: 'number'
-					}
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'Total',
-					dataIndex: 'totalAmount',
-					filter: {
-						type: 'number'
-					}
-				},
-				{
-					xtype: 'datecolumn',
-					text: 'Date',
-					dataIndex: 'orderDate',
-					renderer: Ext.util.Format.dateRenderer('d-M-y'),
-					filter: {
-						type: 'date'
-					}
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'Location',
-					dataIndex: 'description',
-					filter: {
-						type: 'string'
-					}
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'Id',
-					dataIndex: 'salesId',
-					hidden: true
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'Ver',
-					dataIndex: 'salesVer',
-					hidden: true
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'P. Id',
-					dataIndex: 'productId',
-					hidden: true
-				},
-				{
-					xtype: 'gridcolumn',
-					text: 'E. Id',
-					dataIndex: 'salesEntityId',
-					hidden: true
-				}
-			],
-			plugins: [
-				{
-					ptype: 'gridfilters'
-				}
-			],
-			viewConfig: {
-				enableTextSelection : true
-			}
-		},
-		{
 			title: 'Orders',
 			iconCls: 'x-fa fa-tasks',
 			dockedItems: [
@@ -206,17 +43,45 @@ Ext.define('Admin.view.product.Product',{
 							width: 200
 						},
 						{
+							xtype: 'datefield',
+							format: 'd/m/Y',
+							fieldLabel: 'Date',
+							margin : '0 0 0 10',
+							labelWidth: 40,
+							width: 150,
+							reference: 'orderDate',
+							maxValue: new Date(),
+							listeners: {
+								render: function(datefield) {
+									datefield.setValue(new Date());
+								}
+							}
+						},
+						'->',
+						{
+							xtype: 'button',
+							padding: 2,
+							margin : '0 0 0 10',
+							text: 'Clear',
+							style: 'border: groove',
+							iconCls: 'fa fa-eraser',
+							reference: 'orderClrBtn',
+							listeners: {
+								click: 'onClearOrder'
+							}
+						},
+						{
 							xtype: 'button',
 							padding: 2,
 							margin : '0 0 0 10',
 							text: 'Search',
+							style: 'border: groove',
 							iconCls: 'fa fa-search',
 							reference: 'orderSrcBtn',
 							listeners: {
 								click: 'onSearchOrder'
 							}
 						},
-						'->',
 						{
 							xtype: 'button',
 							margin: '0 0 0 10',
